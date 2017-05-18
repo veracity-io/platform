@@ -1,0 +1,130 @@
+---
+swagger: "2.0"
+info:
+  description: "Veracity API"
+  version: "1.0.0"
+  title: "Veracity API"
+  contact:
+    email: "srics.r@gmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "virtserver.swaggerhub.com"
+basePath: "/srics/veracity/1.0.0"
+tags:
+- name: "admins"
+  description: "Secured Admin-only calls"
+- name: "developers"
+  description: "Operations available to regular developers"
+schemes:
+- "https"
+paths:
+  /contract:
+    get:
+      tags:
+      - "developers"
+      summary: "searches contracts"
+      description: "By passing in the appropriate options, you can search for\navailable\
+        \ contracts in the system\n"
+      operationId: "controllers.developers_controller.search_contracts"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "searchString"
+        in: "query"
+        description: "pass an optional search string for looking up contract"
+        required: false
+        type: "string"
+      - name: "skip"
+        in: "query"
+        description: "number of records to skip for pagination"
+        required: false
+        type: "integer"
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "maximum number of records to return"
+        required: false
+        type: "integer"
+        maximum: 50.0
+        minimum: 0
+        format: "int32"
+      responses:
+        200:
+          description: "search results matching criteria"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/ContractItem"
+        400:
+          description: "bad input parameter"
+      x-tags:
+      - tag: "developers"
+    post:
+      tags:
+      - "admins"
+      summary: "adds an contract entry"
+      description: "Adds a contract item to the system"
+      operationId: "controllers.admins_controller.add_contract"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "contractItem"
+        description: "Contrract item to add"
+        required: false
+        schema:
+          $ref: "#/definitions/ContractItem"
+      responses:
+        201:
+          description: "item created"
+        400:
+          description: "invalid input, object invalid"
+        409:
+          description: "an existing item already exists"
+      x-tags:
+      - tag: "admins"
+definitions:
+  ContractItem:
+    type: "object"
+    required:
+    - "expectedEndDate"
+    - "id"
+    - "name"
+    - "owner"
+    - "startDate"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+        example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+      name:
+        type: "string"
+        example: "Widget Adapter"
+      owner:
+        $ref: "#/definitions/Owner"
+      startDate:
+        type: "string"
+        format: "int32"
+        example: "2016-08-29T09:12:33.001Z"
+      expectedEndDate:
+        type: "string"
+        format: "int32"
+        example: "2016-08-29T09:12:33.001Z"
+  Owner:
+    required:
+    - "name"
+    properties:
+      name:
+        type: "string"
+        example: "ACME Corporation"
+      homePage:
+        type: "string"
+        format: "url"
+        example: "https://www.acme-corp.com"
+      phone:
+        type: "string"
+        example: "408-867-5309"
