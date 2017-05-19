@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package store;
+
+// The veracity store service definition.
+service Store {
+  // Sends a greeting.
+  rpc SaveContract (ContractRequest) returns (ContractResponse);
+}
+
+// The request message containing the user's name.
+message ContractRequest {
+  string name = 1; 
+  string owner = 2; 
+}
+
+// The response message containing the greeting.
+message ContractResponse {
+  string message = 1;	
+}
